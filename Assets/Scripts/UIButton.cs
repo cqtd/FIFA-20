@@ -16,5 +16,20 @@ namespace EA.FIFA20.UI
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
         #endif
+
+        protected void OnEnable()
+        {
+            button.onClick.AddListener(OnClick);
+        }
+
+        protected void OnDisable()
+        {
+            button.onClick.RemoveListener(OnClick);
+        }
+
+        protected virtual void OnClick()
+        {
+			
+        }
     }
 }
