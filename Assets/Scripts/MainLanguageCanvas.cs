@@ -1,7 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DG.Tweening;
 using TMPro;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace EA.FIFA20.UI
@@ -24,6 +28,8 @@ namespace EA.FIFA20.UI
 		bool isSelectingLanguage;
 
 		int index = -1;
+
+		IDisposable[] arrowDisposables;
 		
 		void Awake()
 		{
@@ -101,6 +107,53 @@ namespace EA.FIFA20.UI
 			rightArrow.onClick.AddListener(OnRight);
 
 			isSelectingLanguage = true;
+
+			const float scaledUp = 1.25f;
+			const float scaleDown = 0.7f;
+			const float pointerEnterDurataion = 0.2f;
+			const float pointerClickDuration = 0.1f;
+
+			arrowDisposables = new[]
+			{
+
+				leftArrow.image.OnPointerEnterAsObservable().Subscribe(e =>
+				{
+					leftArrow.transform.DOScale(scaledUp, pointerEnterDurataion);
+				}),
+
+				leftArrow.image.OnPointerExitAsObservable().Subscribe(e =>
+				{
+					leftArrow.transform.DOScale(1.0f, pointerEnterDurataion);
+				}),
+
+				leftArrow.image.OnPointerClickAsObservable().Subscribe(e =>
+				{
+					var t1 = leftArrow.transform.DOScale(scaleDown, pointerClickDuration);
+					t1.onComplete = () =>
+					{
+						leftArrow.transform.DOScale(scaledUp, pointerClickDuration);
+					};
+				}),
+
+				rightArrow.image.OnPointerEnterAsObservable().Subscribe(e =>
+				{
+					rightArrow.transform.DOScale(scaledUp, pointerEnterDurataion);
+				}),
+
+				rightArrow.image.OnPointerExitAsObservable().Subscribe(e =>
+				{
+					rightArrow.transform.DOScale(1.0f, pointerEnterDurataion);
+				}),
+
+				rightArrow.image.OnPointerClickAsObservable().Subscribe(e =>
+				{
+					var t1 = rightArrow.transform.DOScale(scaleDown, pointerClickDuration);
+					t1.onComplete = () =>
+					{
+						rightArrow.transform.DOScale(scaledUp, pointerClickDuration);
+					};
+				})
+			};
 		}
 
 		void EndSelectingLanguage()
@@ -110,6 +163,11 @@ namespace EA.FIFA20.UI
 			
 			languagePanel.interactable = false;
 			languagePanel.blocksRaycasts = false;
+
+			foreach (IDisposable disposable in arrowDisposables)
+			{
+				disposable.Dispose();
+			}
 		}
 
 		void SetLanguage()
