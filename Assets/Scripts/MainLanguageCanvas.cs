@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace EA.FIFA20.UI
 {
-	public class MainLanguageCanvas : MonoBehaviour
+	public class MainLanguageCanvas : MonoBehaviour, ILoadingUI
 	{
 		[SerializeField] CanvasGroup languagePanel = default;
 		[SerializeField] CanvasGroup eula = default;

@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace EA.FIFA20.UI
 {
-	public class MainLoadingCanvas : MonoBehaviour
+	public class MainLoadingCanvas : MonoBehaviour, ILoadingUI
 	{
 		[SerializeField] Image progress1 = default;
 		[SerializeField] Image progress2 = default;
@@ -66,6 +67,19 @@ namespace EA.FIFA20.UI
 					progress3.gameObject.SetActive(true);
 				}
 			}
+		}
+
+		public void SetTimer(float time, Action callback = null)
+		{
+			StartCoroutine(TimerCoroutine(time, callback));
+		}
+
+		IEnumerator TimerCoroutine(float time, Action callback)
+		{
+			yield return new WaitForSeconds(time);
+			complete = true;
+			
+			callback?.Invoke();
 		}
 	}
 }
